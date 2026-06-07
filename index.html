@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WTek Network 工作组</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <meta name="keywords"
+    content="WTek,Windows10555,五组,五语,GuNet,WNet,wzhjq2ds,YangSuF,ZYHan,稚月涵,Yana,BZM23,bzm 2023,bzmbm,Mitsu">
+<meta name="description" content="WTek 是一个几乎无人问津的团队组，由稚月涵和她的朋友们兴趣相投组成，提供简单的公益网络服务。于 2019 年初创，至今未强求赞助内容。">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        themeLime: '#a3e635',
+                        themePink: '#f472b6',
+                        glassDark: 'rgba(23, 23, 23, 0.65)',
+                        glassBorder: 'rgba(255, 255, 255, 0.08)',
+                    },
+                    boxShadow: {
+                        'neon-lime': '0 0 20px rgba(163, 230, 53, 0.35)',
+                        'neon-pink': '0 0 20px rgba(244, 114, 182, 0.35)',
+                        'neon-blue': '0 0 20px rgba(56, 189, 248, 0.35)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+            background-color: #050508;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
+        }
+
+        .glass-panel {
+            background: rgba(20, 20, 25, 0.65);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .vignette-overlay {
+            background: radial-gradient(circle, rgba(5, 5, 8, 0.4) 30%, rgba(5, 5, 8, 0.95) 90%);
+            pointer-events: none;
+        }
+
+        .shine-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .shine-effect::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 30%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.15) 30%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0.15) 70%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .group\/card:hover .shine-effect::after {
+            left: 130%;
+            opacity: 1;
+            transition: all 1s ease;
+        }
+
+        .character-img {
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.4s ease;
+            filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.7));
+        }
+
+        .group\/card:hover .character-img {
+            transform: scale(1.06) translateY(-8px);
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.85));
+        }
+
+        .polygon-glow {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -45%) rotate(0deg);
+            width: 220px;
+            height: 220px;
+            opacity: 0.18;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .group\/card:hover .polygon-glow {
+            opacity: 0.7;
+            transform: translate(-50%, -45%) scale(1.1) rotate(12deg);
+            filter: drop-shadow(0 0 15px currentColor);
+        }
+
+        @media (min-width: 1024px) {
+            .social-link {
+                width: 36px;
+                transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.2s;
+            }
+            .social-link:hover {
+                width: auto;
+                padding-right: 14px;
+            }
+            .social-link .link-text {
+                display: none;
+                white-space: nowrap;
+                opacity: 0;
+                transition: opacity 0.2s ease 0.1s;
+            }
+            .social-link:hover .link-text {
+                display: inline;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <canvas id="three-bg" class="fixed top-0 left-0 w-full h-full -z-20"></canvas>
+    <div class="fixed top-0 left-0 w-full h-full -z-10 vignette-overlay"></div>
+    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-white/5 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- Logo
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-themeLime to-themePink flex items-center justify-center font-bold text-black text-lg shadow-neon-lime">
+                    Ξ
+                </div> -->
+                <span class="text-xl font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-themeLime to-themePink">WTek</span>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
+                <a href="#home" class="hover:text-themeLime transition-colors">主页</a>
+                <a href="#team" class="hover:text-themePink transition-colors">团队成员</a>
+                <a href="#projects" class="hover:text-themeLime transition-colors">项目成果</a>
+                <a href="#thanks" class="hover:text-themePink transition-colors">感谢致谢</a>
+                <a href="#contact" class="hover:text-themeLime transition-colors px-4 py-2 rounded-full border border-themeLime/20 bg-themeLime/5 hover:bg-themeLime/10">联系方式</a>
+            </nav>
+
+            <button id="mobile-menu-btn" class="md:hidden text-gray-300 focus:outline-none">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden px-6 py-4 border-t border-white/5 bg-black/95 flex flex-col space-y-4">
+            <a href="#home" class="mobile-nav-link text-gray-300 hover:text-themeLime transition-colors py-1">主页</a>
+            <a href="#team" class="mobile-nav-link text-gray-300 hover:text-themePink transition-colors py-1">团队成员</a>
+            <a href="#projects" class="mobile-nav-link text-gray-300 hover:text-themeLime transition-colors py-1">项目成果</a>
+            <a href="#thanks" class="mobile-nav-link text-gray-300 hover:text-themePink transition-colors py-1">感谢致谢</a>
+            <a href="#contact" class="mobile-nav-link text-themeLime transition-colors py-1">联系方式</a>
+        </div>
+    </header>
+
+    <section id="home" class="min-h-screen flex items-center pt-24 pb-16 px-6 relative">
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <div class="lg:col-span-7 flex flex-col justify-center space-y-6 text-left">
+                <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full glass-panel border border-themeLime/20 w-fit text-xs font-semibold text-themeLime uppercase tracking-widest">
+                    <span class="w-2 h-2 rounded-full bg-themeLime animate-ping"></span>
+                    <span>2026 启程新篇章</span>
+                </div>
+                
+                <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-none text-white">
+                    创造跨越屏幕的 <br class="hidden sm:inline">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-themeLime via-cyan-400 to-themePink">
+                        温度与色彩
+                    </span>
+                </h1>
+                
+                <p class="text-gray-400 text-lg sm:text-xl max-w-xl leading-relaxed">
+                    我们是一个多元化的组织，各成员自发爱好组成。<br>上到热门的 VRChat 模型制作，下到冷门的各类系统工具，我们都有能力制作。
+                </p>
+
+                <div class="flex flex-wrap gap-4 pt-4">
+                    <a href="#team" class="px-8 py-4 rounded-xl bg-gradient-to-r from-themeLime to-cyan-500 hover:from-lime-400 hover:to-cyan-400 text-black font-bold text-center shadow-neon-lime hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-200">
+                        探索团队成员
+                    </a>
+                    <a href="#projects" class="px-8 py-4 rounded-xl glass-panel text-white hover:text-themePink font-semibold text-center border border-white/10 hover:border-themePink/40 hover:bg-white/5 active:scale-95 transition-all duration-200">
+                        查看最新项目
+                    </a>
+                </div>
+
+                <div class="flex items-center space-x-6 pt-6 text-gray-400">
+                    <span class="text-xs uppercase tracking-wider font-bold">加入我们 / 关注我们:</span>
+                    <div class="flex space-x-4 text-xl">
+                        <a href="#" class="hover:text-themeLime transition-colors"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" class="hover:text-themePink transition-colors"><i class="fa-brands fa-bilibili"></i></a>
+                        <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-discord"></i></a>
+                        <a href="#" class="hover:text-themeLime transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 flex justify-center lg:justify-end">
+                <div class="w-full max-w-md rounded-2xl glass-panel p-6 sm:p-8 relative border border-white/10 shadow-2xl overflow-hidden group">
+                    <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-themePink/20 blur-3xl group-hover:bg-themePink/35 transition-all duration-500"></div>
+                    <div class="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-themeLime/10 blur-3xl"></div>
+                    
+                    <div class="relative z-10 flex flex-col space-y-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs uppercase font-extrabold tracking-widest text-themeLime">Featured Creation</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-pulse"></span>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <h3 class="text-2xl font-bold text-white">GuI 3.2</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                正在开发的高性能低占用 LLM 模型，预期效能高于 3.0 约 11%，但资源使用率可降低约 3%。
+                            </p>
+                        </div>
+
+                        <div class="border-t border-dashed border-white/10 my-1"></div>
+
+                        <div class="flex items-center justify-between text-xs text-gray-400">
+                            <span>当前进度: <strong class="text-themeLime font-mono">8%</strong></span>
+                            <span>更新日期: <strong class="text-gray-200">2026.06.07</strong></span>
+                        </div>
+
+                        <div class="w-full bg-white/5 rounded-full h-2 overflow-hidden">
+                            <div class="bg-gradient-to-r from-themeLime to-cyan-400 h-full rounded-full" style="width: 8%"></div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xs text-gray-500">主开发：ZYHan</span>
+                            <a href="#projects" class="text-sm font-semibold text-themePink hover:text-white flex items-center space-x-1.5 transition-colors">
+                                <span>详细情况</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="team" class="py-24 px-6 relative">
+        <div class="max-w-7xl mx-auto relative z-10">
+            
+            <div class="text-center mb-24 space-y-4">
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                    我们的 <span class="bg-clip-text text-transparent bg-gradient-to-r from-themeLime via-cyan-400 to-themePink">核心共创成员</span>
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-themeLime to-themePink mx-auto rounded-full"></div>
+                <p class="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+                    各种人都有，可以说是杂交大家族！
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-36 gap-x-8 pt-12">
+                
+                <div class="relative group/card flex flex-col pt-24">
+                    
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                        <img src="https://cf-lfs.zyhan.uk/wtek/ZYHan.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=ZYHan&backgroundColor=transparent'" alt="ZYHan" class="character-img h-[310px] w-auto object-contain" />
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
+                        
+                        <div class="polygon-glow text-themePink" style="color: #f472b6;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2" stroke-dasharray="1 1">
+                                <polygon points="50,5 93.3,30 93.3,80 50,105 6.7,80 6.7,30" />
+                            </svg>
+                        </div>
+
+                        <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
+                            <div>
+                                <div class="flex items-baseline justify-between flex-wrap gap-x-2">
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">稚月涵</h3>
+                                    <span class="text-sm font-semibold text-themePink font-mono">@ZYHan</span>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">ZYHan</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">咕咕</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">Windows10555</span>
+                                </div>
+                                
+                                <p class="text-xs font-bold uppercase tracking-wider text-themeLime mt-3">创始人 / 首席开发</p>
+                                
+                                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    女，作为创始人。备忘录里放了不知道多少东西。<br />会用：HTML、NodeJS、Golang、Python、Bash、Ps、PSK/RTTY/UTM投影。
+                                </p>
+                            </div>
+
+                            <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
+                                <div class="flex items-center text-sm text-gray-400 group/mail">
+                                    <i class="fa-regular fa-envelope text-themeLime mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <span class="hover:text-white transition-colors break-all">loli@zyhan.uk</span>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2 text-xs">
+                                    <a href="//zyhan.uk" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themePink/30 hover:bg-themePink/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-solid fa-home text-themePink"></i>
+                                        <span class="link-text">个人主页</span>
+                                    </a>
+                                    <a href="//github.com/Windows10555" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themeLime/30 hover:bg-themeLime/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-solid fa-github text-themeLime"></i>
+                                        <span class="link-text">Github</span>
+                                    </a>
+                                    <a href="//space.bilibili.com/470565541" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-blue-400/30 hover:bg-blue-400/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-brands fa-bilibili text-blue-400"></i>
+                                        <span class="link-text">BiliBili</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group/card flex flex-col pt-24">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                        <img src="https://cf-lfs.zyhan.uk/wtek/ajie.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=YiYi&backgroundColor=transparent'" alt="阿杰" class="character-img h-[310px] w-auto object-contain" />
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
+                        <div class="polygon-glow text-themeLime" style="color: #a3e635;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
+                                <polygon points="50,5 95,38 78,92 22,92 5,38" />
+                            </svg>
+                        </div>
+                        <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
+                            <div>
+                                <div class="flex items-baseline justify-between flex-wrap gap-x-2">
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">依依</h3>
+                                    <span class="text-sm font-semibold text-themeLime font-mono">@yiyi</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">口口木灬</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">我系阿杰</span>
+                                </div>
+                                <p class="text-xs font-bold uppercase tracking-wider text-themeLime mt-3">医疗</p>
+                                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    教人学医，天打雷劈<br>
+                                    男，现阶段为维护稚月涵的生命而出力。
+                                </p>
+                            </div>
+                            <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
+                                <div class="flex items-center text-sm text-gray-400 group/mail">
+                                    <i class="fa-regular fa-envelope text-themeLime mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <span class="hover:text-white transition-colors break-all">[private]</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2 text-xs">
+                                    <a href="//ajie.zyhan.uk" target="_blank" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themeLime/30 hover:bg-themeLime/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-solid fa-home text-themeLime"></i>
+                                        <span class="link-text">个人主页</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="relative group/card flex flex-col pt-24">
+                    
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                        <img src="https://cf-lfs.zyhan.uk/wtek/wzhjq2ds.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=Wzhjq2ds&backgroundColor=transparent'" alt="wzhjq2ds" class="character-img h-[310px] w-auto object-contain" />
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
+                        
+                        <div class="polygon-glow text-themeLime" style="color: #a3e635;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2" stroke-dasharray="2 1">
+                                <polygon points="50,5 95,50 50,95 5,50" />
+                            </svg>
+                        </div>
+
+                        <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
+                            <div>
+                                <div class="flex items-baseline justify-between flex-wrap gap-x-2">
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">wzhjq2ds</h3>
+                                    <span class="text-sm font-semibold text-themeLime font-mono">@wz</span>
+                                </div>
+
+                                <!-- 别名预留位 -->
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">沈申</span>
+                                </div>
+                                
+                                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 mt-3">财务 / 物质支持</p>
+                                
+                                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    男，为团队做了不少物质上的支持。也分担了一些精神压力。<br>同时也组织团队例行活动。
+                                </p>
+                            </div>
+
+                            <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
+                                <div class="flex items-center text-sm text-gray-400 group/mail">
+                                    <i class="fa-regular fa-envelope text-themePink mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <span class="hover:text-white transition-colors break-all">[private]</span>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2 text-xs">
+                                    <a href="//wzhjq2ds.github.io" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themePink/30 hover:bg-themePink/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-brands fa-home text-themePink"></i>
+                                        <span class="link-text">个人主页</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group/card flex flex-col pt-24">
+                    
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                        <img src="https://cf-lfs.zyhan.uk/wtek/ysf.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=YangSuF&backgroundColor=transparent'" alt="YangSuF" class="character-img h-[310px] w-auto object-contain" />
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
+                        
+                        <div class="polygon-glow text-cyan-400" style="color: #22d3ee;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
+                                <polygon points="50,5 95,38 78,92 22,92 5,38" />
+                            </svg>
+                        </div>
+
+                        <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
+                            <div>
+                                <div class="flex items-baseline justify-between flex-wrap gap-x-2">
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">YangSuF</h3>
+                                    <span class="text-sm font-semibold text-cyan-400 font-mono">@YSF</span>
+                                </div>
+
+                                <!-- 别名预留位 -->
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">杨佳豪</span>
+                                </div>
+                                
+                                <p class="text-xs font-bold uppercase tracking-wider text-themePink mt-3">空 / 请输入文本</p>
+                                
+                                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    男，作为点子最多的那位，提供了不少思路。
+                                </p>
+                            </div>
+
+                            <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
+                                <div class="flex items-center text-sm text-gray-400 group/mail">
+                                    <i class="fa-regular fa-envelope text-cyan-400 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <span class="hover:text-white transition-colors break-all">[private]</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group/card flex flex-col pt-24">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                        <img src="https://cf-lfs.zyhan.uk/wtek/XY.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=YiYi&backgroundColor=transparent'" alt="依依" class="character-img h-[310px] w-auto object-contain" />
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
+                        <div class="polygon-glow text-themeLime" style="color: #a3e635;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
+                                <polygon points="50,5 95,38 78,92 22,92 5,38" />
+                            </svg>
+                        </div>
+                        <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
+                            <div>
+                                <div class="flex items-baseline justify-between flex-wrap gap-x-2">
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">依依</h3>
+                                    <span class="text-sm font-semibold text-themeLime font-mono">@yiyi</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">小依</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">中依</span>
+                                </div>
+                                <p class="text-xs font-bold uppercase tracking-wider text-themeLime mt-3">Python 开发</p>
+                                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    只会蓝黄语言，其他语言都不会的偏科型成员（自评）。<br>擅长于 Python 语言的超强人员。
+                                </p>
+                            </div>
+                            <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
+                                <div class="flex items-center text-sm text-gray-400 group/mail">
+                                    <i class="fa-regular fa-envelope text-themeLime mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <span class="hover:text-white transition-colors break-all">[private]</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2 text-xs">
+                                    <a href="//www.awkchan.top" target="_blank" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themeLime/30 hover:bg-themeLime/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-solid fa-code text-themeLime"></i>
+                                        <span class="link-text">仓库列表</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group/card flex flex-col pt-24">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                        <img src="https://cf-lfs.zyhan.uk/wtek/bzm23.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=BZM23&backgroundColor=transparent'" alt="BZM23" class="character-img h-[310px] w-auto object-contain" />
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
+                        <div class="polygon-glow text-cyan-400" style="color: #22d3ee;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
+                                <polygon points="50,5 95,50 50,95 5,50" />
+                            </svg>
+                        </div>
+                        <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
+                            <div>
+                                <div class="flex items-baseline justify-between flex-wrap gap-x-2">
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">BZM23</h3>
+                                    <span class="text-sm font-semibold text-cyan-400 font-mono">@BZM_2023</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">bzm 2023</span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">bzm 2024</span>
+                                </div>
+                                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 mt-3">测试 / 数据整理</p>
+                                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    负责 VRChat 相关测试工作，同时参与五彩绘训练数据整理与筛选。
+                                </p>
+                            </div>
+                            <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
+                                <div class="flex items-center text-sm text-gray-400 group/mail">
+                                    <i class="fa-regular fa-envelope text-cyan-400 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <span class="hover:text-white transition-colors break-all">[no public email]</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2 text-xs">
+                                    <a href="//bzm.zyhan.uk" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themePink/30 hover:bg-themePink/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-solid fa-home text-themePink"></i>
+                                        <span class="link-text">主页</span>
+                                    </a>
+                                    <a href="//steamcommunity.com/profiles/76561199422940815/" target="_blank" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-cyan-400/30 hover:bg-cyan-400/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-brands fa-steam text-cyan-400"></i>
+                                        <span class="link-text">Steam</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group/card flex flex-col pt-24">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                        <img src="https://cf-lfs.zyhan.uk/wtek/mbm.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=bzmbm&backgroundColor=transparent'" alt="bzmbm" class="character-img h-[310px] w-auto object-contain" />
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
+                        <div class="polygon-glow text-themePink" style="color: #f472b6;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
+                                <polygon points="50,5 93.3,30 93.3,80 50,105 6.7,80 6.7,30" />
+                            </svg>
+                        </div>
+                        <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
+                            <div>
+                                <div class="flex items-baseline justify-between flex-wrap gap-x-2">
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">bzmbm</h3>
+                                    <span class="text-sm font-semibold text-themePink font-mono">@mbm</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">bzmbm</span>
+                                </div>
+                                <p class="text-xs font-bold uppercase tracking-wider text-themePink mt-3">团队吉祥物</p>
+                                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    团队指定吉祥物。<br>虽然基本不干活，但精神支持拉满。
+                                </p>
+                            </div>
+                            <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
+                                <div class="flex items-center text-sm text-gray-400">
+                                    <i class="fa-solid fa-heart text-themePink mr-2.5 text-base"></i>
+                                    <span>Mascot Member</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group/card flex flex-col pt-24">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                        <img src="https://cf-lfs.zyhan.uk/wtek/Hiren.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=HiRen&backgroundColor=transparent'" alt="樱云 绯恋" class="character-img h-[310px] w-auto object-contain" />
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
+                        <div class="polygon-glow text-themePink" style="color: #f472b6;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
+                                <polygon points="50,5 95,38 78,92 22,92 5,38" />
+                            </svg>
+                        </div>
+                        <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
+                            <div>
+                                <div class="flex items-baseline justify-between flex-wrap gap-x-2">
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">樱云 绯恋</h3>
+                                    <span class="text-sm font-semibold text-themePink font-mono">@Hiren</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">樱云 绯恋</span>
+                                </div>
+                                <p class="text-xs font-bold uppercase tracking-wider text-themePink mt-3">美术设计</p>
+                                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    团队画师，负责部分角色与美术相关创作。
+                                </p>
+                            </div>
+                            <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
+                                <div class="flex items-center text-sm text-gray-400 group/mail">
+                                    <i class="fa-regular fa-envelope text-themePink mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <span class="hover:text-white transition-colors break-all">[private]</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2 text-xs">
+                                    <a href="//steamcommunity.com/profiles/76561199387583675/" target="_blank" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-cyan-400/30 hover:bg-cyan-400/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
+                                        <i class="fa-brands fa-steam text-cyan-400"></i>
+                                        <span class="link-text">Steam</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </section>
+
+    <section id="projects" class="py-24 px-6 relative bg-gradient-to-b from-transparent to-black/30">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="text-center mb-16 space-y-4">
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                    我们的 <span class="bg-clip-text text-transparent bg-gradient-to-r from-themePink via-purple-400 to-themeLime">项目生态</span>
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-themePink to-themeLime mx-auto rounded-full"></div>
+                <p class="text-gray-400 max-w-xl mx-auto text-sm sm:text-base">
+                    内测项目居多，将会在不久后公开使用。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="glass-panel rounded-2xl p-6 border border-white/10 hover:border-themeLime/30 hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-themeLime font-mono uppercase tracking-widest font-extrabold">Active Project</span>
+                            <span class="text-xs text-gray-500">2026.05</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-themeLime transition-colors">GuI 3.0</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            正在开发的高性能低占用 LLM 模型，曾在 ChatGPT 3.5 Turbo 时期综合评分高于其约 12%，但资源使用率降低约 2%。
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/5 flex justify-between items-center text-xs">
+                        <div class="flex space-x-2 text-gray-400">
+                            <span class="px-2 py-1 rounded bg-white/5">Python</span>
+                            <span class="px-2 py-1 rounded bg-white/5">Golang</span>
+                        </div>
+                        <a href="#contact" class="text-themeLime hover:underline flex items-center space-x-1">
+                            <span>申请内测</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 border border-white/10 hover:border-themePink/30 hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-themePink font-mono uppercase tracking-widest font-extrabold">Creative Suite</span>
+                            <span class="text-xs text-gray-500">2026.5</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-themePink transition-colors">GuVRCOSCUtils</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            适用于 VRChat 的 OSC Input 展示，除常规展示电脑使用率外，还支持同时输入消息文字，完全支持 Pulsoid 心率展示。但大小为同类型软件的 4%，且最低兼容层为 Windows 8。
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/5 flex justify-between items-center text-xs">
+                        <div class="flex space-x-2 text-gray-400">
+                            <span class="px-2 py-1 rounded bg-white/5">Golang</span>
+                            <span class="px-2 py-1 rounded bg-white/5">C++</span>
+                        </div>
+                        <a href="#contact" class="text-themePink hover:underline flex items-center space-x-1">
+                            <span>申请内测</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 border border-white/10 hover:border-cyan-400/30 hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-cyan-400 font-mono uppercase tracking-widest font-extrabold">Open Source</span>
+                            <span class="text-xs text-gray-500">2025.12</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">Sshsame-Pro</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            伪造的 SSH 服务器，用于迷惑攻击者，保护真实服务器安全。支持自定义欢迎信息、交互式命令模拟以及日志记录功能。资源占用极低，适合部署在各种环境中。
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/5 flex justify-between items-center text-xs">
+                        <div class="flex space-x-2 text-gray-400">
+                            <span class="px-2 py-1 rounded bg-white/5">Golang</span>
+                        </div>
+                        <a href="//github.com/IW-WTek/sshsame-pro" class="text-cyan-400 hover:underline flex items-center space-x-1">
+                            <span>开源链接</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 border border-white/10 hover:border-themePink/30 hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-themePink font-mono uppercase tracking-widest font-extrabold">AI Model</span>
+                            <span class="text-xs text-gray-500">2026.06</span>
+                        </div>
+                
+                        <h3 class="text-xl font-bold text-white group-hover:text-themePink transition-colors">
+                            五彩绘 Beta 2
+                        </h3>
+                
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            与 GuI 共同开发的 AI 绘图与改图模型。<br>
+                            针对二次元与插画领域进行专项优化，支持图生图、局部重绘与风格迁移等功能。
+                        </p>
+                    </div>
+                
+                    <div class="mt-6 pt-4 border-t border-white/5 flex justify-between items-center text-xs">
+                        <div class="flex space-x-2 text-gray-400">
+                            <span class="px-2 py-1 rounded bg-white/5">Python</span>
+                            <span class="px-2 py-1 rounded bg-white/5">AI</span>
+                        </div>
+                
+                        <a href="#contact" class="text-themePink hover:underline flex items-center space-x-1">
+                            <span>申请内测</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 border border-white/10 hover:border-themeLime/30 hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between group">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-themeLime font-mono uppercase tracking-widest font-extrabold">Chat Room</span>
+                            <span class="text-xs text-gray-500">2025.03</span>
+                        </div>
+                
+                        <h3 class="text-xl font-bold text-white group-hover:text-themeLime transition-colors">
+                            稚杰聊 Alpha
+                        </h3>
+                
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            基于 XChat 的完全匿名聊天室，支持 Markdown 和 LaTeX 语法。
+                        </p>
+                    </div>
+                
+                    <div class="mt-6 pt-4 border-t border-white/5 flex justify-between items-center text-xs">
+                        <div class="flex space-x-2 text-gray-400">
+                            <span class="px-2 py-1 rounded bg-white/5">Python</span>
+                            <span class="px-2 py-1 rounded bg-white/5">NodeJS</span>
+                        </div>
+                        <a href="//jc-chat.zyhan.uk" class="text-themeLime hover:underline flex items-center space-x-1">
+                            <span>点击前往</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="thanks" class="py-24 px-6 relative bg-black/40">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="text-center mb-16 space-y-4">
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                    特别鸣谢 / <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-themePink">Thanks List</span>
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-cyan-400 to-themePink mx-auto rounded-full"></div>
+                <p class="text-gray-400 max-w-xl mx-auto text-sm sm:text-base">
+                    感谢以下所有创作者、资助者以及社区伙伴给予我们的莫大支持（：
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+                <div class="glass-panel p-4 rounded-xl text-center border-white/5 text-gray-300 font-medium hover:text-white transition-colors flex flex-col justify-center items-center h-24">
+                    <span class="text-base"># No Name</span>
+                    <span class="text-xs text-gray-500 mt-1">目前还没有人，下一个可以是你哦</span>
+                </div>
+
+                <a href="javascript:alert('咕咕咕\n请吃的前往 https://jc-chat.zyhan.uk/img/IrQR.webp')" class="glass-panel p-4 rounded-xl text-center border border-themePink/20 hover:border-themePink/50 text-themePink font-medium hover:scale-[1.03] transition-all flex flex-col justify-center items-center h-24 group">
+                    <span class="text-base flex items-center space-x-1">
+                        <span># No Sponsor</span>
+                        <i class="fa-solid fa-link text-xs opacity-60 group-hover:opacity-100 transition-opacity"></i>
+                    </span>
+                    <span class="text-xs text-gray-500 mt-1">请咕咕吃的吧？</span>
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 px-6 relative">
+        <div class="max-w-5xl mx-auto relative z-10">
+            
+            <div class="text-center mb-16 space-y-4">
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                    联系我们 / <span class="bg-clip-text text-transparent bg-gradient-to-r from-themeLime to-themePink">Contact Us</span>
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-themeLime to-themePink mx-auto rounded-full"></div>
+                <p class="text-gray-400 max-w-xl mx-auto text-sm sm:text-base">
+                    有任何创意想法、项目联络或合作提案？欢迎通过以下渠道随时联系我们！
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <a href="mailto:loli@zyhan.uk" class="glass-panel rounded-2xl p-8 border border-white/10 hover:border-themeLime/40 hover:scale-[1.03] transition-all duration-300 flex flex-col justify-between items-center text-center group min-h-[220px]">
+                    <div class="space-y-4 flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-full bg-themeLime/10 border border-themeLime/20 text-themeLime flex items-center justify-center text-2xl group-hover:bg-themeLime group-hover:text-black transition-all duration-300 shadow-neon-lime">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white tracking-wider">电子邮箱</h3>
+                        <p class="text-gray-400 text-xs">点击快速撰写并发送邮件</p>
+                    </div>
+                    <span class="text-sm font-semibold text-themeLime bg-themeLime/5 border border-themeLime/20 px-4 py-1.5 rounded-full mt-4">
+                        loli@zyhan.uk
+                    </span>
+                </a>
+
+                <a href="//wpa.qq.com/msgrd?v=3&uin=2035935505&site=qq&menu=yes" target="_blank" class="glass-panel rounded-2xl p-8 border border-white/10 hover:border-cyan-400/40 hover:scale-[1.03] transition-all duration-300 flex flex-col justify-between items-center text-center group min-h-[220px]">
+                    <div class="space-y-4 flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 flex items-center justify-center text-2xl group-hover:bg-cyan-400 group-hover:text-black transition-all duration-300 shadow-neon-blue">
+                            <i class="fa-brands fa-qq"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white tracking-wider">QQ 联络</h3>
+                        <p class="text-gray-400 text-xs">点击快速添加 QQ 洽谈合作</p>
+                    </div>
+                    <span class="text-sm font-semibold text-cyan-400 bg-cyan-400/5 border border-cyan-400/20 px-4 py-1.5 rounded-full mt-4">
+                        QQ: 2035935505
+                    </span>
+                </a>
+
+                <a href="//space.bilibili.com/470565541" target="_blank" class="glass-panel rounded-2xl p-8 border border-white/10 hover:border-themePink/40 hover:scale-[1.03] transition-all duration-300 flex flex-col justify-between items-center text-center group min-h-[220px]">
+                    <div class="space-y-4 flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-full bg-themePink/10 border border-themePink/20 text-themePink flex items-center justify-center text-2xl group-hover:bg-themePink group-hover:text-black transition-all duration-300 shadow-neon-pink">
+                            <i class="fa-brands fa-bilibili"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white tracking-wider">哔哩哔哩</h3>
+                        <p class="text-gray-400 text-xs">点击前往我们的 B 站个人主页</p>
+                    </div>
+                    <span class="text-sm font-semibold text-themePink bg-themePink/5 border border-themePink/20 px-4 py-1.5 rounded-full mt-4">
+                        NEXUS_创作者
+                    </span>
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-white/5 bg-black/80 relative z-10 text-center text-sm text-gray-500">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <div class="flex items-center space-x-2">
+                <!--<span class="w-6 h-6 rounded bg-gradient-to-br from-themeLime to-themePink flex items-center justify-center font-bold text-black text-xs">Ξ</span>-->
+                <span class="font-bold text-gray-300">WTek</span>
+            </div>
+            <div>
+                © 2026 WTek. 保留所有权利。
+            </div>
+            <!--<div class="flex space-x-6">
+                <a href="#" class="hover:text-white transition-colors">服务条款</a>
+                <a href="#" class="hover:text-white transition-colors">隐私政策</a>
+            </div>-->
+        </div>
+    </footer>
+
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+
+        let scene, camera, renderer, starGeometry, stars, starMaterials;
+        let starCount = 2400; // 粒子总数
+        let meteors = []; // 流星粒子集
+        let meteorCount = 12; // 维持流星在屏幕的数量
+
+        function init3DBackground() {
+            const canvas = document.getElementById('three-bg');
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 150;
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            starGeometry = new THREE.BufferGeometry();
+            const starPositions = new Float32Array(starCount * 3);
+            const starColors = new Float32Array(starCount * 3);
+
+            // 青柠色：#a3e635 -> RGB: 163, 230, 53
+            // 霓虹粉：#f472b6 -> RGB: 244, 114, 182
+            const colorLime = new THREE.Color(0xa3e635);
+            const colorPink = new THREE.Color(0xf472b6);
+            const colorCyan = new THREE.Color(0x22d3ee);
+
+            for (let i = 0; i < starCount * 3; i += 3) {
+                starPositions[i] = (Math.random() - 0.5) * 400;
+                starPositions[i + 1] = (Math.random() - 0.5) * 400;
+                starPositions[i + 2] = (Math.random() - 0.5) * 400;
+
+                let blendColor = new THREE.Color();
+                let rand = Math.random();
+                if (rand < 0.45) {
+                    blendColor.lerpColors(colorLime, colorCyan, Math.random());
+                } else if (rand < 0.9) {
+                    blendColor.lerpColors(colorPink, colorCyan, Math.random());
+                } else {
+                    blendColor.setHex(0x1e1b4b); // 深色作为暗星背景
+                }
+
+                starColors[i] = blendColor.r;
+                starColors[i + 1] = blendColor.g;
+                starColors[i + 2] = blendColor.b;
+            }
+
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+            starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
+            const starMaterial = new THREE.PointsMaterial({
+                size: 1.5,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.85,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+
+            stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+
+            createMeteors();
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function createMeteors() {
+            for (let i = 0; i < meteorCount; i++) {
+                spawnMeteor(i);
+            }
+        }
+
+        function spawnMeteor(index) {
+            if (meteors[index]) {
+                scene.remove(meteors[index].mesh);
+            }
+
+            const length = 15 + Math.random() * 25;
+            const geometry = new THREE.BufferGeometry();
+            
+            const positions = [];
+            const colors = [];
+
+            const isLime = Math.random() > 0.5;
+            const headColor = isLime ? { r: 163/255, g: 230/255, b: 53/255 } : { r: 244/255, g: 114/255, b: 182/255 };
+
+            for (let i = 0; i < 10; i++) {
+                positions.push(0, 0, 0);
+                const ratio = i / 9; // 0 是头部，1 是尾部
+                colors.push(headColor.r * (1 - ratio), headColor.g * (1 - ratio), headColor.b * (1 - ratio));
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            const material = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.9,
+                blending: THREE.AdditiveBlending,
+                linewidth: 2 // 某些显卡会固定为 1 像素
+            });
+
+            const mesh = new THREE.Line(geometry, material);
+            
+            mesh.position.set(
+                (Math.random() - 0.2) * 300,
+                (Math.random() - 0.2) * 300,
+                (Math.random() - 0.5) * 100
+            );
+
+            meteors[index] = {
+                mesh: mesh,
+                speedX: -2.5 - Math.random() * 3.5, // 往左
+                speedY: -1.5 - Math.random() * 2.5, // 往下
+                speedZ: -0.5 - Math.random() * 1.5, // 往深处
+                length: length,
+                age: 0,
+                maxAge: 80 + Math.random() * 100
+            };
+
+            scene.add(mesh);
+        }
+
+        function updateMeteors() {
+            for (let i = 0; i < meteorCount; i++) {
+                const m = meteors[i];
+                m.mesh.position.x += m.speedX;
+                m.mesh.position.y += m.speedY;
+                m.mesh.position.z += m.speedZ;
+                m.age += 1;
+
+                const positions = m.mesh.geometry.attributes.position.array;
+                for (let j = 0; j < 10; j++) {
+                    const ratio = j / 9;
+                    positions[j * 3] = -m.speedX * ratio * m.length * 0.1;
+                    positions[j * 3 + 1] = -m.speedY * ratio * m.length * 0.1;
+                    positions[j * 3 + 2] = -m.speedZ * ratio * m.length * 0.1;
+                }
+                m.mesh.geometry.attributes.position.needsUpdate = true;
+
+                m.mesh.material.opacity = Math.max(0, 1 - (m.age / m.maxAge));
+
+                if (m.age >= m.maxAge || m.mesh.position.y < -200 || m.mesh.position.x < -200) {
+                    spawnMeteor(i);
+                }
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.04;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.04;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            stars.rotation.y += 0.0006;
+            stars.rotation.x += 0.0002;
+
+            camera.position.x += (mouseX - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            updateMeteors();
+
+            renderer.render(scene, camera);
+        }
+
+        window.onload = function () {
+            init3DBackground();
+            animate();
+        };
+    </script>
+</body>
+</html>
