@@ -99,14 +99,49 @@
             transition: all 1s ease;
         }
 
-        .character-img {
-            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.4s ease;
-            filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.7));
+    .character-img {
+       transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.4s ease;
+       /* 使用伪元素阴影，移除图片自身的 drop-shadow */
+       filter: none;
+       -webkit-filter: none;
+           -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%), 
+                        linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 8%, rgba(0,0,0,1) 92%, rgba(0,0,0,0) 100%);
+           mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%), 
+                        linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 8%, rgba(0,0,0,1) 92%, rgba(0,0,0,0) 100%);
+           -webkit-mask-composite: source-in;
+           mask-composite: intersect;
         }
 
         .group\/card:hover .character-img {
             transform: scale(1.06) translateY(-8px);
-            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.85));
+        }
+
+        .character-wrapper {
+            position: relative;
+            overflow: visible;
+        }
+        .character-wrapper::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -12px;
+            width: 70%;
+            height: 34px;
+            filter: blur(18px);
+            background: rgba(0,0,0,0.55);
+            opacity: 0.85;
+            pointer-events: none;
+            z-index: 5;
+            border-radius: 50%;
+        }
+        .group\/card:hover .character-wrapper::after {
+            width: 75%;
+            height: 42px;
+            bottom: -18px;
+            opacity: 0.95;
+            filter: blur(22px);
+            transition: all 240ms cubic-bezier(0.25,0.8,0.25,1);
         }
 
         .polygon-glow {
@@ -150,10 +185,11 @@
         }
     </style>
 </head>
-<body class="relative">
+<body class="relative bg-transparent">
 
-    <canvas id="three-bg" class="fixed top-0 left-0 w-full h-full -z-20"></canvas>
-    <div class="fixed top-0 left-0 w-full h-full -z-10 vignette-overlay"></div>
+    <canvas id="three-bg" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
+    
+    <div class="fixed top-0 left-0 w-full h-full -z-9 vignette-overlay"></div>
     <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-white/5 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -218,10 +254,10 @@
                 <div class="flex items-center space-x-6 pt-6 text-gray-400">
                     <span class="text-xs uppercase tracking-wider font-bold">加入我们 / 关注我们:</span>
                     <div class="flex space-x-4 text-xl">
-                        <a href="#" class="hover:text-themeLime transition-colors"><i class="fa-brands fa-github"></i></a>
-                        <a href="#" class="hover:text-themePink transition-colors"><i class="fa-brands fa-bilibili"></i></a>
-                        <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-discord"></i></a>
-                        <a href="#" class="hover:text-themeLime transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="//github.com/IW-WTek" class="hover:text-themeLime transition-colors"><i class="fa-brands fa-github"></i></a>
+                        <a href="https://space.bilibili.com/470565541" class="hover:text-themePink transition-colors"><i class="fa-brands fa-bilibili"></i></a>
+                        <!--<a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-discord"></i></a>
+                        <a href="#" class="hover:text-themeLime transition-colors"><i class="fa-brands fa-twitter"></i></a>-->
                     </div>
                 </div>
             </div>
@@ -256,7 +292,7 @@
                         </div>
 
                         <div class="flex justify-between items-center pt-2">
-                            <span class="text-xs text-gray-500">主开发：ZYHan</span>
+                            <span class="text-xs text-gray-500">主开发：稚月涵</span>
                             <a href="#projects" class="text-sm font-semibold text-themePink hover:text-white flex items-center space-x-1.5 transition-colors">
                                 <span>详细情况</span>
                                 <i class="fa-solid fa-arrow-right text-xs"></i>
@@ -285,52 +321,43 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-36 gap-x-8 pt-12">
                 
                 <div class="relative group/card flex flex-col pt-24">
-                    
-                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-30 overflow-visible pointer-events-none character-wrapper"> 
                         <img src="https://cf-lfs.zyhan.uk/wtek/ZYHan.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=ZYHan&backgroundColor=transparent'" alt="ZYHan" class="character-img h-[310px] w-auto object-contain" />
                     </div>
-
                     <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
-                        
-                        <div class="polygon-glow text-themePink" style="color: #f472b6;">
+                        <div class="polygon-glow text-themeLime" style="color: #72f492;">
                             <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2" stroke-dasharray="1 1">
-                                <polygon points="50,5 93.3,30 93.3,80 50,105 6.7,80 6.7,30" />
+                                <polygon points="50,5 95,38 78,92 22,92 5,38" />
                             </svg>
                         </div>
-
                         <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
                             <div>
                                 <div class="flex items-baseline justify-between flex-wrap gap-x-2">
                                     <h3 class="text-2xl font-bold text-white tracking-wide">稚月涵</h3>
-                                    <span class="text-sm font-semibold text-themePink font-mono">@ZYHan</span>
+                                    <span class="text-sm font-semibold text-themeLime font-mono">@ZYHan</span>
                                 </div>
-                                
                                 <div class="flex flex-wrap gap-1.5 mt-1.5">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">ZYHan</span>
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">咕咕</span>
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">Windows10555</span>
                                 </div>
-                                
                                 <p class="text-xs font-bold uppercase tracking-wider text-themeLime mt-3">创始人 / 首席开发</p>
-                                
                                 <p class="text-gray-300 text-sm mt-3 leading-relaxed">
                                     女，作为创始人。备忘录里放了不知道多少东西。<br />会用：HTML、NodeJS、Golang、Python、Bash、Ps、PSK/RTTY/UTM投影。
                                 </p>
                             </div>
-
                             <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
                                 <div class="flex items-center text-sm text-gray-400 group/mail">
                                     <i class="fa-regular fa-envelope text-themeLime mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
                                     <span class="hover:text-white transition-colors break-all">loli@zyhan.uk</span>
                                 </div>
-
                                 <div class="flex flex-wrap gap-2 text-xs">
                                     <a href="//zyhan.uk" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themePink/30 hover:bg-themePink/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
-                                        <i class="fa-solid fa-home text-themePink"></i>
+                                        <i class="fa-solid fa-home text-themeLime"></i>
                                         <span class="link-text">个人主页</span>
                                     </a>
                                     <a href="//github.com/Windows10555" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themeLime/30 hover:bg-themeLime/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
-                                        <i class="fa-solid fa-github text-themeLime"></i>
+                                        <i class="fa-brands fa-github text-themeLime"></i>
                                         <span class="link-text">Github</span>
                                     </a>
                                     <a href="//space.bilibili.com/470565541" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-blue-400/30 hover:bg-blue-400/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
@@ -344,26 +371,26 @@
                 </div>
 
                 <div class="relative group/card flex flex-col pt-24">
-                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-30 overflow-visible pointer-events-none character-wrapper">
                         <img src="https://cf-lfs.zyhan.uk/wtek/ajie.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=YiYi&backgroundColor=transparent'" alt="阿杰" class="character-img h-[310px] w-auto object-contain" />
                     </div>
                     <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
-                        <div class="polygon-glow text-themeLime" style="color: #a3e635;">
-                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
+                        <div class="polygon-glow text-themePink" style="color: #d445a9;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2" stroke-dasharray="1 1">
                                 <polygon points="50,5 95,38 78,92 22,92 5,38" />
                             </svg>
                         </div>
                         <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
                             <div>
                                 <div class="flex items-baseline justify-between flex-wrap gap-x-2">
-                                    <h3 class="text-2xl font-bold text-white tracking-wide">依依</h3>
-                                    <span class="text-sm font-semibold text-themeLime font-mono">@yiyi</span>
+                                    <h3 class="text-2xl font-bold text-white tracking-wide">阿杰</h3>
+                                    <span class="text-sm font-semibold text-themePink font-mono">@ajie</span>
                                 </div>
                                 <div class="flex flex-wrap gap-1.5 mt-1.5">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">口口木灬</span>
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">我系阿杰</span>
                                 </div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-themeLime mt-3">医疗</p>
+                                <p class="text-xs font-bold uppercase tracking-wider text-themePink mt-3">医疗</p>
                                 <p class="text-gray-300 text-sm mt-3 leading-relaxed">
                                     教人学医，天打雷劈<br>
                                     男，现阶段为维护稚月涵的生命而出力。
@@ -371,12 +398,12 @@
                             </div>
                             <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
                                 <div class="flex items-center text-sm text-gray-400 group/mail">
-                                    <i class="fa-regular fa-envelope text-themeLime mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <i class="fa-regular fa-envelope text-themePink mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
                                     <span class="hover:text-white transition-colors break-all">[private]</span>
                                 </div>
                                 <div class="flex flex-wrap gap-2 text-xs">
                                     <a href="//ajie.zyhan.uk" target="_blank" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themeLime/30 hover:bg-themeLime/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
-                                        <i class="fa-solid fa-home text-themeLime"></i>
+                                        <i class="fa-solid fa-home text-themePink"></i>
                                         <span class="link-text">个人主页</span>
                                     </a>
                                 </div>
@@ -385,49 +412,38 @@
                     </div>
                 </div>
 
-
                 <div class="relative group/card flex flex-col pt-24">
-                    
-                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-30 overflow-visible pointer-events-none character-wrapper">
                         <img src="https://cf-lfs.zyhan.uk/wtek/wzhjq2ds.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=Wzhjq2ds&backgroundColor=transparent'" alt="wzhjq2ds" class="character-img h-[310px] w-auto object-contain" />
                     </div>
-
                     <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
-                        
-                        <div class="polygon-glow text-themeLime" style="color: #a3e635;">
-                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2" stroke-dasharray="2 1">
+                        <div class="polygon-glow text-sky-400" style="color: #38bdf8;">
+                            <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
                                 <polygon points="50,5 95,50 50,95 5,50" />
                             </svg>
                         </div>
-
                         <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
                             <div>
                                 <div class="flex items-baseline justify-between flex-wrap gap-x-2">
                                     <h3 class="text-2xl font-bold text-white tracking-wide">wzhjq2ds</h3>
-                                    <span class="text-sm font-semibold text-themeLime font-mono">@wz</span>
+                                    <span class="text-sm font-semibold text-sky-400 font-mono">@wz</span>
                                 </div>
-
-                                <!-- 别名预留位 -->
                                 <div class="flex flex-wrap gap-1.5 mt-1.5">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">沈申</span>
                                 </div>
-                                
-                                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 mt-3">财务 / 物质支持</p>
-                                
+                                <p class="text-xs font-bold uppercase tracking-wider text-sky-400 mt-3">财务 / 物质支持</p>
                                 <p class="text-gray-300 text-sm mt-3 leading-relaxed">
                                     男，为团队做了不少物质上的支持。也分担了一些精神压力。<br>同时也组织团队例行活动。
                                 </p>
                             </div>
-
                             <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
                                 <div class="flex items-center text-sm text-gray-400 group/mail">
-                                    <i class="fa-regular fa-envelope text-themePink mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <i class="fa-regular fa-envelope text-sky-400 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
                                     <span class="hover:text-white transition-colors break-all">[private]</span>
                                 </div>
-
                                 <div class="flex flex-wrap gap-2 text-xs">
                                     <a href="//wzhjq2ds.github.io" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themePink/30 hover:bg-themePink/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
-                                        <i class="fa-brands fa-home text-themePink"></i>
+                                        <i class="fa-solid fa-home text-sky-400"></i>
                                         <span class="link-text">个人主页</span>
                                     </a>
                                 </div>
@@ -437,80 +453,72 @@
                 </div>
 
                 <div class="relative group/card flex flex-col pt-24">
-                    
-                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-30 overflow-visible pointer-events-none character-wrapper">
                         <img src="https://cf-lfs.zyhan.uk/wtek/ysf.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=YangSuF&backgroundColor=transparent'" alt="YangSuF" class="character-img h-[310px] w-auto object-contain" />
                     </div>
-
                     <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
-                        
-                        <div class="polygon-glow text-cyan-400" style="color: #22d3ee;">
+                        <div class="polygon-glow text-green-400" style="color: #4ade80;">
                             <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
                                 <polygon points="50,5 95,38 78,92 22,92 5,38" />
                             </svg>
                         </div>
-
                         <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
                             <div>
                                 <div class="flex items-baseline justify-between flex-wrap gap-x-2">
                                     <h3 class="text-2xl font-bold text-white tracking-wide">YangSuF</h3>
-                                    <span class="text-sm font-semibold text-cyan-400 font-mono">@YSF</span>
+                                    <span class="text-sm font-semibold text-green-400 font-mono">@YSF</span>
                                 </div>
-
-                                <!-- 别名预留位 -->
                                 <div class="flex flex-wrap gap-1.5 mt-1.5">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">杨佳豪</span>
                                 </div>
-                                
-                                <p class="text-xs font-bold uppercase tracking-wider text-themePink mt-3">空 / 请输入文本</p>
-                                
+                                <p class="text-xs font-bold uppercase tracking-wider text-green-400 mt-3">空 / 请输入文本</p>
                                 <p class="text-gray-300 text-sm mt-3 leading-relaxed">
                                     男，作为点子最多的那位，提供了不少思路。
                                 </p>
                             </div>
-
                             <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
                                 <div class="flex items-center text-sm text-gray-400 group/mail">
-                                    <i class="fa-regular fa-envelope text-cyan-400 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <i class="fa-regular fa-envelope text-green-400 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
                                     <span class="hover:text-white transition-colors break-all">[private]</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="relative group/card flex flex-col pt-24">
-                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-30 overflow-visible pointer-events-none character-wrapper">
                         <img src="https://cf-lfs.zyhan.uk/wtek/XY.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=YiYi&backgroundColor=transparent'" alt="依依" class="character-img h-[310px] w-auto object-contain" />
                     </div>
                     <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
-                        <div class="polygon-glow text-themeLime" style="color: #a3e635;">
+                        <div class="polygon-glow text-sky-300" style="color: #7dd3fc;">
                             <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
-                                <polygon points="50,5 95,38 78,92 22,92 5,38" />
+                                <polygon points="50,15 90,85 10,85" />
                             </svg>
                         </div>
                         <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
                             <div>
                                 <div class="flex items-baseline justify-between flex-wrap gap-x-2">
                                     <h3 class="text-2xl font-bold text-white tracking-wide">依依</h3>
-                                    <span class="text-sm font-semibold text-themeLime font-mono">@yiyi</span>
+                                    <span class="text-sm font-semibold text-sky-300 font-mono">@yiyi</span>
                                 </div>
                                 <div class="flex flex-wrap gap-1.5 mt-1.5">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">小依</span>
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">中依</span>
                                 </div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-themeLime mt-3">Python 开发</p>
+                                <p class="text-xs font-bold uppercase tracking-wider text-sky-300 mt-3">Python 开发</p>
                                 <p class="text-gray-300 text-sm mt-3 leading-relaxed">
                                     只会蓝黄语言，其他语言都不会的偏科型成员（自评）。<br>擅长于 Python 语言的超强人员。
                                 </p>
                             </div>
                             <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
                                 <div class="flex items-center text-sm text-gray-400 group/mail">
-                                    <i class="fa-regular fa-envelope text-themeLime mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <i class="fa-regular fa-envelope text-sky-300 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
                                     <span class="hover:text-white transition-colors break-all">[private]</span>
                                 </div>
                                 <div class="flex flex-wrap gap-2 text-xs">
                                     <a href="//www.awkchan.top" target="_blank" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themeLime/30 hover:bg-themeLime/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
-                                        <i class="fa-solid fa-code text-themeLime"></i>
+                                        <i class="fa-solid fa-code text-sky-300"></i>
                                         <span class="link-text">仓库列表</span>
                                     </a>
                                 </div>
@@ -520,11 +528,11 @@
                 </div>
 
                 <div class="relative group/card flex flex-col pt-24">
-                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-30 overflow-visible pointer-events-none character-wrapper">
                         <img src="https://cf-lfs.zyhan.uk/wtek/bzm23.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=BZM23&backgroundColor=transparent'" alt="BZM23" class="character-img h-[310px] w-auto object-contain" />
                     </div>
                     <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
-                        <div class="polygon-glow text-cyan-400" style="color: #22d3ee;">
+                        <div class="polygon-glow text-pink-500" style="color: #ec4899;">
                             <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
                                 <polygon points="50,5 95,50 50,95 5,50" />
                             </svg>
@@ -533,25 +541,25 @@
                             <div>
                                 <div class="flex items-baseline justify-between flex-wrap gap-x-2">
                                     <h3 class="text-2xl font-bold text-white tracking-wide">BZM23</h3>
-                                    <span class="text-sm font-semibold text-cyan-400 font-mono">@BZM_2023</span>
+                                    <span class="text-sm font-semibold text-pink-500 font-mono">@BZM_2023</span>
                                 </div>
                                 <div class="flex flex-wrap gap-1.5 mt-1.5">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">bzm 2023</span>
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">bzm 2024</span>
                                 </div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 mt-3">测试 / 数据整理</p>
+                                <p class="text-xs font-bold uppercase tracking-wider text-pink-500 mt-3">测试 / 数据整理</p>
                                 <p class="text-gray-300 text-sm mt-3 leading-relaxed">
                                     负责 VRChat 相关测试工作，同时参与五彩绘训练数据整理与筛选。
                                 </p>
                             </div>
                             <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
                                 <div class="flex items-center text-sm text-gray-400 group/mail">
-                                    <i class="fa-regular fa-envelope text-cyan-400 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <i class="fa-regular fa-envelope text-pink-500 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
                                     <span class="hover:text-white transition-colors break-all">[no public email]</span>
                                 </div>
                                 <div class="flex flex-wrap gap-2 text-xs">
                                     <a href="//bzm.zyhan.uk" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-themePink/30 hover:bg-themePink/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
-                                        <i class="fa-solid fa-home text-themePink"></i>
+                                        <i class="fa-solid fa-home text-pink-500"></i>
                                         <span class="link-text">主页</span>
                                     </a>
                                     <a href="//steamcommunity.com/profiles/76561199422940815/" target="_blank" class="social-link h-9 rounded-full bg-white/5 border border-white/5 hover:border-cyan-400/30 hover:bg-cyan-400/10 text-white flex items-center justify-center space-x-2 px-3 overflow-hidden">
@@ -565,32 +573,32 @@
                 </div>
 
                 <div class="relative group/card flex flex-col pt-24">
-                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-30 overflow-visible pointer-events-none character-wrapper">
                         <img src="https://cf-lfs.zyhan.uk/wtek/mbm.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=bzmbm&backgroundColor=transparent'" alt="bzmbm" class="character-img h-[310px] w-auto object-contain" />
                     </div>
                     <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
-                        <div class="polygon-glow text-themePink" style="color: #f472b6;">
+                        <div class="polygon-glow text-white" style="color: #ffffff;">
                             <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
-                                <polygon points="50,5 93.3,30 93.3,80 50,105 6.7,80 6.7,30" />
+                                <polygon points="50,15 90,85 10,85" />
                             </svg>
                         </div>
                         <div class="relative z-10 flex flex-col flex-grow justify-between mt-4">
                             <div>
                                 <div class="flex items-baseline justify-between flex-wrap gap-x-2">
                                     <h3 class="text-2xl font-bold text-white tracking-wide">bzmbm</h3>
-                                    <span class="text-sm font-semibold text-themePink font-mono">@mbm</span>
+                                    <span class="text-sm font-semibold text-white font-mono">@mbm</span>
                                 </div>
                                 <div class="flex flex-wrap gap-1.5 mt-1.5">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">bzmbm</span>
                                 </div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-themePink mt-3">团队吉祥物</p>
+                                <p class="text-xs font-bold uppercase tracking-wider text-white mt-3">团队吉祥物</p>
                                 <p class="text-gray-300 text-sm mt-3 leading-relaxed">
                                     团队指定吉祥物。<br>虽然基本不干活，但精神支持拉满。
                                 </p>
                             </div>
                             <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
                                 <div class="flex items-center text-sm text-gray-400">
-                                    <i class="fa-solid fa-heart text-themePink mr-2.5 text-base"></i>
+                                    <i class="fa-solid fa-heart text-white mr-2.5 text-base"></i>
                                     <span>Mascot Member</span>
                                 </div>
                             </div>
@@ -599,11 +607,11 @@
                 </div>
 
                 <div class="relative group/card flex flex-col pt-24">
-                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none">
+                    <div class="absolute top-0 left-0 w-full h-[230px] flex items-end justify-center z-20 pointer-events-none character-wrapper">
                         <img src="https://cf-lfs.zyhan.uk/wtek/Hiren.webp" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=HiRen&backgroundColor=transparent'" alt="樱云 绯恋" class="character-img h-[310px] w-auto object-contain" />
                     </div>
                     <div class="glass-panel rounded-2xl p-6 pt-16 relative flex flex-col justify-between overflow-hidden shine-effect min-h-[380px] border-white/10 z-10">
-                        <div class="polygon-glow text-themePink" style="color: #f472b6;">
+                        <div class="polygon-glow text-cyan-500" style="color: #06b6d4;">
                             <svg viewBox="0 0 100 100" class="w-full h-full fill-none stroke-current" stroke-width="2">
                                 <polygon points="50,5 95,38 78,92 22,92 5,38" />
                             </svg>
@@ -612,19 +620,19 @@
                             <div>
                                 <div class="flex items-baseline justify-between flex-wrap gap-x-2">
                                     <h3 class="text-2xl font-bold text-white tracking-wide">樱云 绯恋</h3>
-                                    <span class="text-sm font-semibold text-themePink font-mono">@Hiren</span>
+                                    <span class="text-sm font-semibold text-cyan-500 font-mono">@Hiren</span>
                                 </div>
                                 <div class="flex flex-wrap gap-1.5 mt-1.5">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">樱云 绯恋</span>
                                 </div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-themePink mt-3">美术设计</p>
+                                <p class="text-xs font-bold uppercase tracking-wider text-cyan-500 mt-3">美术设计</p>
                                 <p class="text-gray-300 text-sm mt-3 leading-relaxed">
                                     团队画师，负责部分角色与美术相关创作。
                                 </p>
                             </div>
                             <div class="mt-6 space-y-4 pt-4 border-t border-white/5">
                                 <div class="flex items-center text-sm text-gray-400 group/mail">
-                                    <i class="fa-regular fa-envelope text-themePink mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
+                                    <i class="fa-regular fa-envelope text-cyan-500 mr-2.5 text-base transition-transform group-hover/mail:scale-110"></i>
                                     <span class="hover:text-white transition-colors break-all">[private]</span>
                                 </div>
                                 <div class="flex flex-wrap gap-2 text-xs">
@@ -640,7 +648,6 @@
             </div>
         </div> 
     </section>
-
     <section id="projects" class="py-24 px-6 relative bg-gradient-to-b from-transparent to-black/30">
         <div class="max-w-7xl mx-auto">
             
@@ -683,7 +690,7 @@
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-themePink font-mono uppercase tracking-widest font-extrabold">Creative Suite</span>
-                            <span class="text-xs text-gray-500">2026.5</span>
+                            <span class="text-xs text-gray-500">2026.05</span>
                         </div>
                         <h3 class="text-xl font-bold text-white group-hover:text-themePink transition-colors">GuVRCOSCUtils</h3>
                         <p class="text-gray-400 text-sm leading-relaxed">
@@ -750,6 +757,7 @@
                         <a href="#contact" class="text-themePink hover:underline flex items-center space-x-1">
                             <span>申请内测</span>
                             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -868,7 +876,7 @@
                         <p class="text-gray-400 text-xs">点击前往我们的 B 站个人主页</p>
                     </div>
                     <span class="text-sm font-semibold text-themePink bg-themePink/5 border border-themePink/20 px-4 py-1.5 rounded-full mt-4">
-                        NEXUS_创作者
+                        Windows10555
                     </span>
                 </a>
 
