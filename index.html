@@ -186,6 +186,46 @@
                 opacity: 1;
             }
         }
+
+        @keyframes rainbowFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        #special-sponsor {
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s ease;
+            border: 2px solid transparent !important;
+            background-image: linear-gradient(rgba(20, 20, 25, 0.65), rgba(20, 20, 25, 0.65)), 
+                linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            background-size: 100% 100%, 300% 300%;
+        }
+
+        #special-sponsor:hover {
+            animation: rainbowFlow 3s ease infinite;
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.2);
+            transform: scale(1.05) translateY(-2px);
+        }
+
+        #special-sponsor:hover .sponsor-name {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+            background-size: 300% 300%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowFlow 3s ease infinite;
+            font-weight: 800;
+        }
     </style>
 </head>
 <body class="relative bg-[#050508]">
@@ -816,7 +856,7 @@
                     <span class="text-xs text-gray-500 mt-1"></span>
                 </div>
                 -->
-                <a href="//space.bilibili.com/481005058" class="glass-panel p-4 rounded-xl text-center border border-sponsorZSGQ/20 hover:border-sponsorZSGQ/50 text-theme font-medium hover:scale-[1.03] transition-all flex flex-col justify-center items-center h-24 group" target="_blank">
+                <a href="//space.bilibili.com/481005058" class="glass-panel p-4 rounded-xl text-center border border-sponsorZSGQ/20 hover:border-sponsorZSGQ/50 text-theme font-medium hover:scale-[1.03] transition-all flex flex-col justify-center items-center h-24 group" id="special-sponsor" target="_blank">
                     <span class="text-base flex items-center space-x-1">
                         <span>竹笙歌浅</span>
                         <i class="fa-solid fa-link text-xs opacity-60 group-hover:opacity-100 transition-opacity"></i>
